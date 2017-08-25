@@ -21,24 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import one.chest.music.search.handler.HealthHandler
-import one.chest.music.search.handler.MusicModule
-import one.chest.music.search.handler.SuggestionHandler
+package one.chest.music.search.handler
 
-import static ratpack.groovy.Groovy.ratpack
-import static ratpack.handling.RequestLogger.ncsa
+import com.google.inject.AbstractModule
+import groovy.transform.CompileStatic
+import one.chest.musiclibrary.MusicGuesser
 
-ratpack {
-    bindings {
-        module MusicModule
-        module {
-            bind HealthHandler
-            bind SuggestionHandler
-        }
-    }
-    handlers {
-        all ncsa()
-        get "health", HealthHandler
-        get "guess", SuggestionHandler
+@CompileStatic
+class MusicModule extends AbstractModule {
+
+    @Override
+    protected void configure() {
+        binder().bind(MusicGuesser).toInstance(MusicGuesser.createDefaultGuesser("https://suggest-music.yandex.ru"))
     }
 }

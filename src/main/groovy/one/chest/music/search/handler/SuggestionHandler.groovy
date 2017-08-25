@@ -21,24 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import one.chest.music.search.handler.HealthHandler
-import one.chest.music.search.handler.MusicModule
-import one.chest.music.search.handler.SuggestionHandler
+package one.chest.music.search.handler
 
-import static ratpack.groovy.Groovy.ratpack
-import static ratpack.handling.RequestLogger.ncsa
+import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
+import one.chest.musiclibrary.MusicGuesser
+import ratpack.groovy.handling.GroovyContext
+import ratpack.groovy.handling.GroovyHandler
 
-ratpack {
-    bindings {
-        module MusicModule
-        module {
-            bind HealthHandler
-            bind SuggestionHandler
+import javax.inject.Inject
+
+import static ratpack.jackson.Jackson.json
+
+@Slf4j
+@CompileStatic
+class SuggestionHandler extends GroovyHandler {
+
+    @Inject
+    MusicGuesser guesser
+
+    @Override
+    protected void handle(GroovyContext context) {
+        try {
+            def text = context.request.queryParams["text"]
+            assert text != null
+            def result = guesser.suggest(text)
+
+            log.info("Text to search: ${text}, result: ${result}")
+            context.render json(result)
+        } catch (e) {
+            context.response.status 500
+            context.render e.message
         }
-    }
-    handlers {
-        all ncsa()
-        get "health", HealthHandler
-        get "guess", SuggestionHandler
     }
 }

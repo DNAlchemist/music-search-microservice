@@ -21,24 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import one.chest.music.search.handler.HealthHandler
-import one.chest.music.search.handler.MusicModule
-import one.chest.music.search.handler.SuggestionHandler
+package one.chest.music.search.handler
 
-import static ratpack.groovy.Groovy.ratpack
-import static ratpack.handling.RequestLogger.ncsa
+import groovy.transform.CompileStatic
+import one.chest.musiclibrary.MusicGuesser
+import org.junit.Test
+import ratpack.jackson.JsonRender
 
-ratpack {
-    bindings {
-        module MusicModule
-        module {
-            bind HealthHandler
-            bind SuggestionHandler
+import static ratpack.groovy.test.handling.GroovyRequestFixture.handle
+
+@CompileStatic
+class SuggestionHandlerTest {
+
+    @Test
+    void testGuess() {
+        def searchText =  "Alan Jackson - You Never Know"
+        def response = handle(new SuggestionHandler(
+                guesser: [suggest: { text -> return ["Alan Jackson - Angels & Alcohol", "Alan Jackson - You Can Always Come Home", text]}] as MusicGuesser
+        )) {
+            uri "guess?text=${searchText}"
         }
-    }
-    handlers {
-        all ncsa()
-        get "health", HealthHandler
-        get "guess", SuggestionHandler
+        assert response.rendered(JsonRender).object instanceof List
+        List<String> list = (List<String>) response.rendered(JsonRender).object
+        assert list == ["Alan Jackson - Angels & Alcohol", "Alan Jackson - You Can Always Come Home", "Alan Jackson - You Never Know"]
     }
 }
