@@ -23,10 +23,12 @@
  */
 package one.chest.music.search.handler
 
+import groovy.transform.CompileStatic
 import org.junit.Test
 
 import static ratpack.groovy.test.handling.GroovyRequestFixture.handle
 
+@CompileStatic
 class HealthHandlerTest {
 
     @Test
