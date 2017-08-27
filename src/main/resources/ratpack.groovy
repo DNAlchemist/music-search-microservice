@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 import one.chest.music.search.handler.HealthHandler
-import one.chest.music.search.handler.MusicModule
+import one.chest.music.search.module.MusicModule
 import one.chest.music.search.handler.SuggestionHandler
 
 import static ratpack.groovy.Groovy.ratpack

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package one.chest.music.search.handler
+package one.chest.music.search.module
 
 import com.google.inject.AbstractModule
 import groovy.transform.CompileStatic
