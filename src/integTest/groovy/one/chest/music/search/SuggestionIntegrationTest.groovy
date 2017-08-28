@@ -27,6 +27,7 @@ import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
 import org.junit.Test
 import ratpack.groovy.test.GroovyRatpackMainApplicationUnderTest
+import ratpack.http.client.ReceivedResponse
 
 @CompileStatic
 class SuggestionIntegrationTest {
@@ -52,5 +53,14 @@ class SuggestionIntegrationTest {
                 "Bob marley - natural mystic",
                 "Bob marley - boarding house, san francisco, ca. July 7th, 1975"
         ]
+    }
+
+    @Test
+    void getTrack() {
+        ReceivedResponse response = app.httpClient.get("tracks/67172/628177")
+        assert response.statusCode == 200
+        def json = new JsonSlurper().parseText(response.body.text)
+        assert json instanceof Map
+        assert json == [artist: 'Ozzy Osbourne', duration: 289560, name: 'Crazy Train', trackLocation: [albumId: 67172, trackId: 628177]]
     }
 }

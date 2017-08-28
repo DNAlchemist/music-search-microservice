@@ -21,28 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package one.chest.music.search.handler
 
-import one.chest.music.search.handler.HealthHandler
-import one.chest.music.search.handler.SuggestionHandler
-import one.chest.music.search.handler.TrackHandler
-import one.chest.music.search.module.MusicModule
+import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
+import one.chest.musiclibrary.MusicLibrary
+import one.chest.musiclibrary.Track
+import one.chest.musiclibrary.TrackLocation
+import ratpack.groovy.handling.GroovyContext
+import ratpack.groovy.handling.GroovyHandler
 
-import static ratpack.groovy.Groovy.ratpack
-import static ratpack.handling.RequestLogger.ncsa
+import javax.inject.Inject
 
-ratpack {
-    bindings {
-        module MusicModule
-        module {
-            bind HealthHandler
-            bind SuggestionHandler
-            bind TrackHandler
+import static ratpack.jackson.Jackson.json
+
+@Slf4j
+@CompileStatic
+class TrackHandler extends GroovyHandler {
+
+    @Inject
+    MusicLibrary library
+
+    @Override
+    protected void handle(GroovyContext context) {
+        try {
+            def trackLocation = new TrackLocation(context.pathTokens.albumId as int, context.pathTokens.trackId as int)
+            Track track = library.getTrack(trackLocation)
+            context.render json(track)
+        } catch (e) {
+            log.error("Request handling error", e)
+            context.response.status 500
+            context.render e.message
         }
     }
-    handlers {
-        all ncsa()
-        get "health", HealthHandler
-        get "guess", SuggestionHandler
-        get "tracks/:albumId/:trackId", TrackHandler
-    }
+
 }

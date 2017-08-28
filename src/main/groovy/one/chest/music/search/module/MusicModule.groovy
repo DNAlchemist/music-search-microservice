@@ -26,6 +26,7 @@ package one.chest.music.search.module
 import com.google.inject.AbstractModule
 import groovy.transform.CompileStatic
 import one.chest.musiclibrary.MusicGuesser
+import one.chest.musiclibrary.MusicLibrary
 
 @CompileStatic
 class MusicModule extends AbstractModule {
@@ -33,5 +34,6 @@ class MusicModule extends AbstractModule {
     @Override
     protected void configure() {
         binder().bind(MusicGuesser).toInstance(MusicGuesser.createDefaultGuesser("https://suggest-music.yandex.ru"))
+        binder().bind(MusicLibrary).toInstance(MusicLibrary.createDefaultLibrary("https://music.yandex.ru"))
     }
 }
