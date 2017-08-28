@@ -35,9 +35,9 @@ class SuggestionHandlerTest {
 
     @Test
     void testGuess() {
-        def searchText =  "Alan Jackson - You Never Know"
+        def searchText = "Alan Jackson - You Never Know"
         def response = handle(new SuggestionHandler(
-                guesser: [suggest: { text -> return ["Alan Jackson - Angels & Alcohol", "Alan Jackson - You Can Always Come Home", text]}] as MusicGuesser
+                guesser: [suggest: { text -> return ["Alan Jackson - Angels & Alcohol", "Alan Jackson - You Can Always Come Home", text] }] as MusicGuesser
         )) {
             uri "guess?text=${searchText}"
         }
