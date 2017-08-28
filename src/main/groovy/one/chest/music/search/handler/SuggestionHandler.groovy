@@ -50,6 +50,7 @@ class SuggestionHandler extends GroovyHandler {
             log.info("Text to search: ${text}, result: ${result}")
             context.render json(result)
         } catch (e) {
+            log.error("Request handling error", e)
             context.response.status 500
             context.render e.message
         }
